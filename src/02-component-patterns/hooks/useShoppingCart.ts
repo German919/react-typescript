@@ -10,23 +10,17 @@ export const useShoppingCart = () =>{
         
         setShoppingCart(oldProduct => {
 
-           const productInCart : ProductIntCart = oldProduct[product.id] || { ...product, count:0}
-
-           if( Math.max( productInCart.count + count, 0) > 0 ){
-               productInCart.count += count;
-               return {
-                   ...oldProduct,
-                   [product.id] : productInCart
-               }
+           if( count === 0 ){
+               const { [ product.id ]: toDelete, ...rest} = oldProduct;
+               return rest;
            }
 
-           const {[product.id]:toDelete, ...rest} = oldProduct;
-
-           return {
-               ...rest
+           return{
+               ...oldProduct,
+               [ product.id ]: {...product, count}
            }
+
         }) 
-
     }
 
     return {
