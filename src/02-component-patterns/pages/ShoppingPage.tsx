@@ -1,62 +1,54 @@
 import { ProductCard, ProductButtons, ProductImage, ProductTitle } from "../components"
 import "../styles/custom-styles.css";
+import styles from "../styles/styles.module.css";
 import { Product } from '../interfaces/interfaces';
-import { useShoppingCart } from '../hooks/useShoppingCart';
 import products  from "../data/products";
 
 export interface ProductIntCart extends Product {
     count : number
 }
 
-export const ShoppingPage = () => {
+const product = products[0];
 
-    const {onProductCountChange, shoppingCart} = useShoppingCart()
+export const ShoppingPage = () => {
 
     return (
         <div>
             <h1>Shopping Store</h1>
             <hr></hr>
-
-            <div style={{display: 'flex', flexWrap:"wrap"}}>
-                {
-                    products.map(product => (
-
+               
                     <ProductCard 
                         key={product.id}
                         product={product}
                         className="bg-dark"
-                        onChange={onProductCountChange}
-                        value={shoppingCart[product.id]?.count || 0 }
+                        initialValues = {{
+                            count:4,
+                            maxCount:10
+                        }}
+                       
                     >
+                        {
+                            ({ reset, increaseBy, count, isMaxCountReached })=> (
+                                <>
+                                    <ProductImage className="custom-image" />
+                                    <ProductTitle className="text-white" />
+                                    <ProductButtons className="custom-buttons"/>
 
-                        <ProductImage className="custom-image" />
-                        <ProductTitle className="text-white" />
-                        <ProductButtons className="custom-buttons"/>
+                                    <button onClick={reset}>reset</button>
 
+                                    <button onClick={()=>increaseBy(-2)} > -2 </button>
+                                    <button 
+                                        onClick={()=>increaseBy(2)} 
+                                        className={isMaxCountReached ? styles.disabled : ""}
+                                        > 
+                                        +2 </button>
+                                    <span> {count} </span>
+                                </>
+                            )
+                        }
+                        
                     </ProductCard>
-
-                    ))
-                }
-            </div>
-
-            <div className="shopping-cart">
-                {
-                    Object.entries(shoppingCart).map(([key, product])=>(
-                        <ProductCard 
-                            key={product.id}
-                            product={product}
-                            className="bg-dark"
-                            style={{width:"100px"}}
-                            value={product.count}
-                            onChange={onProductCountChange}
-                        >
-                            <ProductImage className="custom-image" />
-                            <ProductButtons className="custom-buttons"/>
-
-                        </ProductCard>
-                    ))
-                }
-            </div>
+           
         </div>
     )
 }
